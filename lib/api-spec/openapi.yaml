@@ -3,20 +3,34 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: VeriHire — verified workforce management API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: workers
+    description: Worker profile operations
+  - name: customers
+    description: Customer operations
+  - name: bookings
+    description: Monthly hire bookings
+  - name: attendance
+    description: Attendance tracking for monthly bookings
+  - name: tasks
+    description: Short-term tasks
+  - name: reviews
+    description: Ratings and reviews
+  - name: admin
+    description: Admin dashboard operations
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +38,874 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # ---------- Workers ----------
+  /workers:
+    get:
+      operationId: listWorkers
+      tags: [workers]
+      summary: List workers (filterable)
+      parameters:
+        - in: query
+          name: category
+          schema: { type: string }
+        - in: query
+          name: city
+          schema: { type: string }
+        - in: query
+          name: verificationStatus
+          schema:
+            type: string
+            enum: [pending, approved, rejected]
+        - in: query
+          name: minExperience
+          schema: { type: integer }
+        - in: query
+          name: maxMonthlySalary
+          schema: { type: integer }
+        - in: query
+          name: maxHourlyRate
+          schema: { type: integer }
+        - in: query
+          name: search
+          schema: { type: string }
+      responses:
+        "200":
+          description: List of workers
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Worker" }
+    post:
+      operationId: createWorker
+      tags: [workers]
+      summary: Create a worker profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WorkerInput" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Worker" }
+
+  /workers/featured:
+    get:
+      operationId: listFeaturedWorkers
+      tags: [workers]
+      summary: Top-rated verified workers
+      responses:
+        "200":
+          description: Featured workers
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Worker" }
+
+  /workers/{id}:
+    get:
+      operationId: getWorker
+      tags: [workers]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Worker
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Worker" }
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+    patch:
+      operationId: updateWorker
+      tags: [workers]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WorkerUpdate" }
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Worker" }
+
+  /workers/{id}/verify:
+    post:
+      operationId: verifyWorker
+      tags: [workers, admin]
+      summary: Approve or reject a worker (admin)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/VerifyWorkerInput" }
+      responses:
+        "200":
+          description: Updated worker
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Worker" }
+
+  /workers/{id}/reviews:
+    get:
+      operationId: listWorkerReviews
+      tags: [reviews]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Reviews for worker
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Review" }
+
+  # ---------- Customers ----------
+  /customers:
+    get:
+      operationId: listCustomers
+      tags: [customers]
+      responses:
+        "200":
+          description: Customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Customer" }
+    post:
+      operationId: createCustomer
+      tags: [customers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CustomerInput" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Customer" }
+
+  /customers/{id}:
+    get:
+      operationId: getCustomer
+      tags: [customers]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Customer
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Customer" }
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+
+  # ---------- Bookings ----------
+  /bookings:
+    get:
+      operationId: listBookings
+      tags: [bookings]
+      parameters:
+        - in: query
+          name: customerId
+          schema: { type: integer }
+        - in: query
+          name: workerId
+          schema: { type: integer }
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [active, completed, cancelled]
+      responses:
+        "200":
+          description: Bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Booking" }
+    post:
+      operationId: createBooking
+      tags: [bookings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BookingInput" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Booking" }
+
+  /bookings/{id}:
+    get:
+      operationId: getBooking
+      tags: [bookings]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Booking
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Booking" }
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+
+  /bookings/{id}/status:
+    patch:
+      operationId: updateBookingStatus
+      tags: [bookings]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BookingStatusInput" }
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Booking" }
+
+  /bookings/{id}/attendance:
+    get:
+      operationId: listAttendance
+      tags: [attendance]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Attendance entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/AttendanceEntry" }
+    post:
+      operationId: createAttendance
+      tags: [attendance]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AttendanceInput" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AttendanceEntry" }
+
+  # ---------- Tasks ----------
+  /tasks:
+    get:
+      operationId: listTasks
+      tags: [tasks]
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [open, accepted, in_progress, completed, cancelled]
+        - in: query
+          name: category
+          schema: { type: string }
+        - in: query
+          name: city
+          schema: { type: string }
+        - in: query
+          name: customerId
+          schema: { type: integer }
+        - in: query
+          name: workerId
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Task" }
+    post:
+      operationId: createTask
+      tags: [tasks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TaskInput" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Task" }
+
+  /tasks/{id}:
+    get:
+      operationId: getTask
+      tags: [tasks]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Task
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Task" }
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+
+  /tasks/{id}/accept:
+    post:
+      operationId: acceptTask
+      tags: [tasks]
+      summary: Worker accepts an open task
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AcceptTaskInput" }
+      responses:
+        "200":
+          description: Task accepted
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Task" }
+
+  /tasks/{id}/status:
+    patch:
+      operationId: updateTaskStatus
+      tags: [tasks]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TaskStatusInput" }
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Task" }
+
+  # ---------- Reviews ----------
+  /reviews:
+    get:
+      operationId: listReviews
+      tags: [reviews]
+      parameters:
+        - in: query
+          name: workerId
+          schema: { type: integer }
+        - in: query
+          name: customerId
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Review" }
+    post:
+      operationId: createReview
+      tags: [reviews]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ReviewInput" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Review" }
+
+  # ---------- Admin / Wow endpoints ----------
+  /admin/dashboard:
+    get:
+      operationId: getAdminDashboard
+      tags: [admin]
+      summary: Admin overview stats
+      responses:
+        "200":
+          description: Admin dashboard stats
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AdminDashboard" }
+
+  /admin/recent-activity:
+    get:
+      operationId: listRecentActivity
+      tags: [admin]
+      summary: Recent platform activity feed
+      responses:
+        "200":
+          description: Activity entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/ActivityEntry" }
+
+  /admin/category-breakdown:
+    get:
+      operationId: getCategoryBreakdown
+      tags: [admin]
+      summary: Worker counts grouped by category
+      responses:
+        "200":
+          description: Category counts
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/CategoryCount" }
+
 components:
   schemas:
     HealthStatus:
       type: object
       properties:
+        status: { type: string }
+      required: [status]
+
+    ErrorResponse:
+      type: object
+      properties:
+        error: { type: string }
+      required: [error]
+
+    # ---------- Worker ----------
+    Worker:
+      type: object
+      properties:
+        id: { type: integer }
+        fullName: { type: string }
+        phone: { type: string }
+        photoUrl:
+          type: ["string", "null"]
+        category: { type: string, description: "maid | driver | guard | cook | nanny | gardener | other" }
+        skills:
+          type: array
+          items: { type: string }
+        bio:
+          type: ["string", "null"]
+        experienceYears: { type: integer }
+        expectedMonthlySalary:
+          type: ["integer", "null"]
+        hourlyRate:
+          type: ["integer", "null"]
+        city: { type: string }
+        serviceArea:
+          type: ["string", "null"]
+        cnicNumber: { type: string }
+        cnicImageUrl:
+          type: ["string", "null"]
+        verificationStatus:
+          type: string
+          enum: [pending, approved, rejected]
+        rejectionReason:
+          type: ["string", "null"]
+        averageRating: { type: number }
+        reviewCount: { type: integer }
+        completedJobs: { type: integer }
+        availability:
+          type: string
+          enum: [available, busy, offline]
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+      required:
+        - id
+        - fullName
+        - phone
+        - category
+        - skills
+        - experienceYears
+        - city
+        - cnicNumber
+        - verificationStatus
+        - averageRating
+        - reviewCount
+        - completedJobs
+        - availability
+        - createdAt
+        - updatedAt
+
+    WorkerInput:
+      type: object
+      properties:
+        fullName: { type: string }
+        phone: { type: string }
+        photoUrl: { type: ["string", "null"] }
+        category: { type: string }
+        skills:
+          type: array
+          items: { type: string }
+        bio: { type: ["string", "null"] }
+        experienceYears: { type: integer }
+        expectedMonthlySalary: { type: ["integer", "null"] }
+        hourlyRate: { type: ["integer", "null"] }
+        city: { type: string }
+        serviceArea: { type: ["string", "null"] }
+        cnicNumber: { type: string }
+        cnicImageUrl: { type: ["string", "null"] }
+      required:
+        - fullName
+        - phone
+        - category
+        - skills
+        - experienceYears
+        - city
+        - cnicNumber
+
+    WorkerUpdate:
+      type: object
+      properties:
+        fullName: { type: string }
+        phone: { type: string }
+        photoUrl: { type: ["string", "null"] }
+        category: { type: string }
+        skills:
+          type: array
+          items: { type: string }
+        bio: { type: ["string", "null"] }
+        experienceYears: { type: integer }
+        expectedMonthlySalary: { type: ["integer", "null"] }
+        hourlyRate: { type: ["integer", "null"] }
+        city: { type: string }
+        serviceArea: { type: ["string", "null"] }
+        availability:
+          type: string
+          enum: [available, busy, offline]
+
+    VerifyWorkerInput:
+      type: object
+      properties:
+        decision:
+          type: string
+          enum: [approved, rejected]
+        rejectionReason: { type: ["string", "null"] }
+      required: [decision]
+
+    # ---------- Customer ----------
+    Customer:
+      type: object
+      properties:
+        id: { type: integer }
+        fullName: { type: string }
+        phone: { type: string }
+        city: { type: string }
+        photoUrl: { type: ["string", "null"] }
+        createdAt: { type: string, format: date-time }
+      required: [id, fullName, phone, city, createdAt]
+
+    CustomerInput:
+      type: object
+      properties:
+        fullName: { type: string }
+        phone: { type: string }
+        city: { type: string }
+        photoUrl: { type: ["string", "null"] }
+      required: [fullName, phone, city]
+
+    # ---------- Booking (monthly hire) ----------
+    Booking:
+      type: object
+      properties:
+        id: { type: integer }
+        customerId: { type: integer }
+        workerId: { type: integer }
+        startDate: { type: string, format: date-time }
+        monthlySalary: { type: integer }
         status:
           type: string
+          enum: [active, completed, cancelled]
+        notes: { type: ["string", "null"] }
+        worker: { $ref: "#/components/schemas/Worker" }
+        customer: { $ref: "#/components/schemas/Customer" }
+        attendanceSummary: { $ref: "#/components/schemas/AttendanceSummary" }
+        createdAt: { type: string, format: date-time }
       required:
+        - id
+        - customerId
+        - workerId
+        - startDate
+        - monthlySalary
         - status
+        - createdAt
 
+    BookingInput:
+      type: object
+      properties:
+        customerId: { type: integer }
+        workerId: { type: integer }
+        startDate: { type: string, format: date-time }
+        monthlySalary: { type: integer }
+        notes: { type: ["string", "null"] }
+      required: [customerId, workerId, startDate, monthlySalary]
+
+    BookingStatusInput:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [active, completed, cancelled]
+      required: [status]
+
+    AttendanceSummary:
+      type: object
+      properties:
+        presentDays: { type: integer }
+        absentDays: { type: integer }
+        currentStreak: { type: integer }
+      required: [presentDays, absentDays, currentStreak]
+
+    AttendanceEntry:
+      type: object
+      properties:
+        id: { type: integer }
+        bookingId: { type: integer }
+        date: { type: string, format: date }
+        status:
+          type: string
+          enum: [present, absent]
+        checkInTime: { type: ["string", "null"] }
+        notes: { type: ["string", "null"] }
+        createdAt: { type: string, format: date-time }
+      required: [id, bookingId, date, status, createdAt]
+
+    AttendanceInput:
+      type: object
+      properties:
+        date: { type: string, format: date }
+        status:
+          type: string
+          enum: [present, absent]
+        checkInTime: { type: ["string", "null"] }
+        notes: { type: ["string", "null"] }
+      required: [date, status]
+
+    # ---------- Task (on-demand) ----------
+    Task:
+      type: object
+      properties:
+        id: { type: integer }
+        customerId: { type: integer }
+        title: { type: string }
+        description: { type: string }
+        category: { type: string }
+        durationHours: { type: integer }
+        location: { type: string }
+        city: { type: string }
+        budget: { type: integer }
+        status:
+          type: string
+          enum: [open, accepted, in_progress, completed, cancelled]
+        scheduledFor: { type: ["string", "null"], format: date-time }
+        acceptedByWorkerId: { type: ["integer", "null"] }
+        acceptedAt: { type: ["string", "null"], format: date-time }
+        completedAt: { type: ["string", "null"], format: date-time }
+        customer: { $ref: "#/components/schemas/Customer" }
+        worker: { $ref: "#/components/schemas/Worker" }
+        createdAt: { type: string, format: date-time }
+      required:
+        - id
+        - customerId
+        - title
+        - description
+        - category
+        - durationHours
+        - location
+        - city
+        - budget
+        - status
+        - createdAt
+
+    TaskInput:
+      type: object
+      properties:
+        customerId: { type: integer }
+        title: { type: string }
+        description: { type: string }
+        category: { type: string }
+        durationHours: { type: integer }
+        location: { type: string }
+        city: { type: string }
+        budget: { type: integer }
+        scheduledFor: { type: ["string", "null"], format: date-time }
+      required:
+        - customerId
+        - title
+        - description
+        - category
+        - durationHours
+        - location
+        - city
+        - budget
+
+    AcceptTaskInput:
+      type: object
+      properties:
+        workerId: { type: integer }
+      required: [workerId]
+
+    TaskStatusInput:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [open, accepted, in_progress, completed, cancelled]
+      required: [status]
+
+    # ---------- Review ----------
+    Review:
+      type: object
+      properties:
+        id: { type: integer }
+        workerId: { type: integer }
+        customerId: { type: integer }
+        bookingId: { type: ["integer", "null"] }
+        taskId: { type: ["integer", "null"] }
+        rating: { type: integer }
+        comment: { type: ["string", "null"] }
+        customer: { $ref: "#/components/schemas/Customer" }
+        createdAt: { type: string, format: date-time }
+      required: [id, workerId, customerId, rating, createdAt]
+
+    ReviewInput:
+      type: object
+      properties:
+        workerId: { type: integer }
+        customerId: { type: integer }
+        bookingId: { type: ["integer", "null"] }
+        taskId: { type: ["integer", "null"] }
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        comment: { type: ["string", "null"] }
+      required: [workerId, customerId, rating]
+
+    # ---------- Admin ----------
+    AdminDashboard:
+      type: object
+      properties:
+        totalWorkers: { type: integer }
+        pendingWorkers: { type: integer }
+        approvedWorkers: { type: integer }
+        rejectedWorkers: { type: integer }
+        totalCustomers: { type: integer }
+        activeBookings: { type: integer }
+        openTasks: { type: integer }
+        completedTasks: { type: integer }
+        averageRating: { type: number }
+        totalReviews: { type: integer }
+      required:
+        - totalWorkers
+        - pendingWorkers
+        - approvedWorkers
+        - rejectedWorkers
+        - totalCustomers
+        - activeBookings
+        - openTasks
+        - completedTasks
+        - averageRating
+        - totalReviews
+
+    ActivityEntry:
+      type: object
+      properties:
+        id: { type: string }
+        type:
+          type: string
+          enum: [worker_registered, worker_verified, worker_rejected, booking_created, task_created, task_accepted, task_completed, review_created]
+        title: { type: string }
+        description: { type: string }
+        actorName: { type: ["string", "null"] }
+        createdAt: { type: string, format: date-time }
+      required: [id, type, title, description, createdAt]
+
+    CategoryCount:
+      type: object
+      properties:
+        category: { type: string }
+        count: { type: integer }
+        approved: { type: integer }
+      required: [category, count, approved]

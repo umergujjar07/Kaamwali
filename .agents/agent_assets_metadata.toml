@@ -1,0 +1,44 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "yC6sDFAe9GZOdzm_LNTcJ"
+uri = "file://artifacts/verihire/src/assets/hero.png"
+type = "image"
+title = "Trustworthy service workers hero image"
+
+[[generated]]
+id = "aQp56M63hpzhQhpdSN96u"
+uri = "file://artifacts/verihire/src/assets/workers/ayesha.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "TsR-BdbheQA2TW7GnuIIg"
+uri = "file://artifacts/verihire/src/assets/workers/fatima.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "QcIw8_NXSoC7LVEw0oKku"
+uri = "file://artifacts/verihire/src/assets/workers/imran.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "uzjfX3_ShPIjx3na3iTM0"
+uri = "file://artifacts/verihire/src/assets/workers/rashid.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "pQKw1B7jIef3NFUPkQZi5"
+uri = "file://artifacts/verihire/src/assets/workers/asif.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "2KFOjrZ3eDCn6-pidToMt"
+uri = "file://artifacts/verihire/src/assets/workers/noor.png"
+type = "image"
+title = "generated_image"
