@@ -3,6 +3,7 @@ import { Footer } from "@/components/Footer";
 import { Layout } from "@/components/Layout";
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { RoleProvider } from "@/components/RoleContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Landing from "@/pages/Landing";
 import WorkerRegistration from "@/pages/WorkerRegistration";
@@ -16,8 +17,11 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import AdminWorkerReview from "@/pages/AdminWorkerReview";
 import NotFound from "@/pages/not-found";
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
+    <QueryClientProvider client={queryClient}>
     <RoleProvider>
       <Layout>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
@@ -37,6 +41,7 @@ function App() {
         </WouterRouter>
       </Layout>
     </RoleProvider>
+    </QueryClientProvider>
   );
 }
 
