@@ -1,3 +1,4 @@
+import { useLocation } from "wouter";
 import { AppHeader } from "./AppHeader";
 import { Footer } from "./Footer";
 import { useRole } from "./RoleContext";
@@ -7,6 +8,7 @@ import AuthPage from "@/pages/AuthPage";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const { role, setRole, isAuthenticated, isReady } = useRole();
+  const [location] = useLocation();
 
   if (!isReady) return null;
 
@@ -18,16 +20,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background font-sans">
       <AppHeader />
-      <main className="flex-1 flex flex-col">
+
+      {/* Page content — re-keyed on route change to trigger fade-in animation */}
+      <main key={location} className="flex-1 flex flex-col page-animate">
         {children}
       </main>
+
       <Footer />
 
-      {/* Step 1: no role yet → role picker */}
+      {/* Step 1: no role yet → compact role picker */}
       <Dialog open={!role} onOpenChange={() => {}}>
         <DialogContent className="sm:max-w-sm p-0 overflow-hidden [&>button]:hidden" aria-describedby={undefined}>
-          <div aria-label="KaamWali.com" role="heading" className="sr-only">KaamWali.com — Choose your role</div>
-          {/* Header */}
+          <div className="sr-only">KaamWali.com — Choose your role</div>
+
+          {/* Blue gradient header */}
           <div className="bg-gradient-to-br from-primary to-blue-600 px-6 py-5 text-center">
             <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center mx-auto mb-3">
               <span className="text-white font-bold text-lg">K</span>
