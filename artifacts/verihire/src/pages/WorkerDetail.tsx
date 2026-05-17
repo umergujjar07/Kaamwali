@@ -201,42 +201,111 @@ export default function WorkerDetail() {
                 ) : (
                   <Dialog open={bookingOpen} onOpenChange={setBookingOpen}>
                     <DialogTrigger asChild>
-                      <Button className="w-full rounded-xl h-12 text-lg shadow-md" size="lg">
+                      <Button className="w-full rounded-xl h-12 text-base font-semibold shadow-md bg-primary hover:bg-primary/90" size="lg">
                         Hire Monthly
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-md">
-                      <DialogHeader>
-                        <DialogTitle>Hire {worker.fullName}</DialogTitle>
-                      </DialogHeader>
-                      <form onSubmit={handleBooking} className="space-y-4 pt-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="startDate">Start Date</Label>
-                          <Input id="startDate" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} required />
+                    <DialogContent className="sm:max-w-lg p-0 overflow-hidden">
+                      {/* Dialog Header — colored band */}
+                      <div className="bg-gradient-to-r from-primary to-blue-500 px-6 pt-6 pb-5">
+                        <div className="flex items-center gap-4">
+                          <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white/40 bg-white/20 flex-shrink-0">
+                            {worker.photoUrl
+                              ? <img src={worker.photoUrl} alt={worker.fullName} className="w-full h-full object-cover" />
+                              : <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-white">{worker.fullName.charAt(0)}</div>
+                            }
+                          </div>
+                          <div>
+                            <p className="text-white/70 text-xs font-semibold uppercase tracking-wider mb-0.5">Monthly Hire Contract</p>
+                            <h2 className="text-xl font-bold text-white">{worker.fullName}</h2>
+                            <p className="text-white/80 text-sm capitalize">{worker.category} · {worker.city}</p>
+                          </div>
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="monthlySalary">Agreed Monthly Salary (PKR)</Label>
-                          <Input 
-                            id="monthlySalary" 
-                            type="number" 
-                            placeholder={worker.expectedMonthlySalary?.toString() || "e.g. 25000"} 
-                            value={monthlySalary} 
-                            onChange={e => setMonthlySalary(e.target.value)} 
-                            required 
+                      </div>
+
+                      <form onSubmit={handleBooking} className="px-6 py-5 space-y-5">
+                        {/* Start Date */}
+                        <div className="space-y-1.5">
+                          <label htmlFor="startDate" className="block text-sm font-semibold text-gray-700">
+                            Start Date <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            id="startDate"
+                            type="date"
+                            value={startDate}
+                            onChange={e => setStartDate(e.target.value)}
+                            required
+                            className="w-full h-11 px-4 rounded-xl border-2 border-gray-200 bg-slate-50 text-gray-800 text-sm font-medium focus:outline-none focus:border-primary focus:bg-white transition-colors"
                           />
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="notes">Notes (Optional)</Label>
-                          <Textarea 
-                            id="notes" 
-                            placeholder="Any specific instructions or terms?" 
-                            value={notes} 
-                            onChange={e => setNotes(e.target.value)} 
+
+                        {/* Monthly Salary */}
+                        <div className="space-y-1.5">
+                          <label htmlFor="monthlySalary" className="block text-sm font-semibold text-gray-700">
+                            Agreed Monthly Salary <span className="text-red-500">*</span>
+                          </label>
+                          {worker.expectedMonthlySalary && (
+                            <p className="text-xs text-gray-500">Worker expects <span className="font-semibold text-primary">PKR {worker.expectedMonthlySalary.toLocaleString()}/month</span></p>
+                          )}
+                          <div className="flex h-11 rounded-xl border-2 border-gray-200 bg-slate-50 overflow-hidden focus-within:border-primary focus-within:bg-white transition-colors">
+                            <div className="flex items-center px-3 border-r border-gray-200 bg-blue-50">
+                              <span className="text-sm font-bold text-primary whitespace-nowrap">PKR</span>
+                            </div>
+                            <input
+                              id="monthlySalary"
+                              type="number"
+                              min="1000"
+                              placeholder={worker.expectedMonthlySalary?.toString() || "25000"}
+                              value={monthlySalary}
+                              onChange={e => setMonthlySalary(e.target.value)}
+                              required
+                              className="flex-1 px-3 bg-transparent text-gray-800 text-sm font-medium focus:outline-none"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Notes */}
+                        <div className="space-y-1.5">
+                          <label htmlFor="notes" className="block text-sm font-semibold text-gray-700">
+                            Special Instructions <span className="text-gray-400 font-normal">(optional)</span>
+                          </label>
+                          <textarea
+                            id="notes"
+                            rows={3}
+                            placeholder="Working hours, specific duties, accommodation, meals, etc."
+                            value={notes}
+                            onChange={e => setNotes(e.target.value)}
+                            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-slate-50 text-gray-800 text-sm focus:outline-none focus:border-primary focus:bg-white transition-colors resize-none"
                           />
                         </div>
-                        <Button type="submit" className="w-full" disabled={createBooking.isPending}>
-                          {createBooking.isPending ? "Processing..." : "Confirm Booking"}
-                        </Button>
+
+                        {/* Summary Box */}
+                        {monthlySalary && (
+                          <div className="rounded-xl bg-blue-50 border border-blue-200 px-4 py-3.5">
+                            <p className="text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Contract Summary</p>
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-gray-600">Monthly salary</span>
+                              <span className="font-bold text-gray-800">PKR {parseInt(monthlySalary || "0").toLocaleString()}</span>
+                            </div>
+                            <div className="flex justify-between items-center text-sm mt-1">
+                              <span className="text-gray-600">Starting from</span>
+                              <span className="font-semibold text-gray-800">{startDate ? new Date(startDate).toLocaleDateString("en-PK", { day: "numeric", month: "long", year: "numeric" }) : "—"}</span>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Submit */}
+                        <button
+                          type="submit"
+                          disabled={createBooking.isPending || !monthlySalary}
+                          className="w-full h-12 rounded-xl bg-primary text-white font-semibold text-base hover:bg-primary/90 active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-primary/20"
+                        >
+                          {createBooking.isPending ? "Creating contract..." : "Confirm Monthly Hire"}
+                        </button>
+
+                        <p className="text-center text-xs text-gray-400">
+                          By confirming, you agree to pay the agreed salary monthly. You can end the contract at any time.
+                        </p>
                       </form>
                     </DialogContent>
                   </Dialog>
