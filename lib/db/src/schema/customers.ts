@@ -6,6 +6,8 @@ export const customersTable = pgTable("customers", {
   phone: text("phone").notNull(),
   city: text("city").notNull(),
   photoUrl: text("photo_url"),
+  email: text("email").unique(),
+  passwordHash: text("password_hash"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

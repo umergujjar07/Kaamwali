@@ -30,6 +30,8 @@ export const workersTable = pgTable("workers", {
   reviewCount: integer("review_count").notNull().default(0),
   completedJobs: integer("completed_jobs").notNull().default(0),
   availability: text("availability").notNull().default("available"),
+  email: text("email").unique(),
+  passwordHash: text("password_hash"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

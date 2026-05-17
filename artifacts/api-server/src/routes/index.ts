@@ -7,9 +7,11 @@ import attendanceRouter from "./attendance";
 import tasksRouter from "./tasks";
 import reviewsRouter from "./reviews";
 import adminRouter from "./admin";
+import authRouter from "./auth";
 
 const router: IRouter = Router();
 
+router.use(authRouter);
 router.use(healthRouter);
 router.use(workersRouter);
 router.use(customersRouter);
