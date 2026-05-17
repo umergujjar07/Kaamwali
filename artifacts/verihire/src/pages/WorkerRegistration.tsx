@@ -122,7 +122,7 @@ export default function WorkerRegistration() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-2xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Join VeriHire</h1>
+        <h1 className="text-3xl font-bold mb-2">Join KaamWali.com</h1>
         <p className="text-muted-foreground">Register as a trusted worker and find reliable jobs.</p>
       </div>
 

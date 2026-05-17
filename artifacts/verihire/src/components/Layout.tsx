@@ -21,7 +21,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <Dialog open={!role} onOpenChange={() => {}}>
         <DialogContent className="sm:max-w-md [&>button]:hidden">
           <DialogHeader>
-            <DialogTitle className="text-2xl text-center mb-2">Welcome to VeriHire</DialogTitle>
+            <DialogTitle className="text-2xl text-center mb-2">Welcome to KaamWali.com</DialogTitle>
             <DialogDescription className="text-center text-base">
               Choose your role to get started. You can switch anytime from the top menu.
             </DialogDescription>

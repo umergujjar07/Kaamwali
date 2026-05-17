@@ -2,14 +2,14 @@ import { Link } from "wouter";
 
 export function Footer() {
   return (
-    <footer className="border-t bg-white py-12 mt-auto">
+    <footer className="border-t border-white/40 bg-white/50 backdrop-blur-xl py-12 mt-auto">
       <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
-              V
+              K
             </div>
-            <span className="font-bold text-lg tracking-tight">VeriHire</span>
+            <span className="font-bold text-lg tracking-tight">KaamWali<span className="text-primary">.com</span></span>
           </div>
           <p className="text-sm text-muted-foreground leading-relaxed">
             Every worker is verified by a real human admin, so customers hire with confidence.
@@ -44,7 +44,7 @@ export function Footer() {
         </div>
       </div>
       <div className="container mx-auto px-4 mt-12 pt-8 border-t border-border/50 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} VeriHire. All rights reserved.
+        © {new Date().getFullYear()} KaamWali.com. All rights reserved.
       </div>
     </footer>
   );

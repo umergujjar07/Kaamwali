@@ -13,7 +13,7 @@ import Activity from "@/pages/Activity";
 import { Shield, LayoutDashboard, CheckCircle, Users, Briefcase, ClipboardList, UserCheck, Activity as ActivityIcon, LogOut, Menu, X } from "lucide-react";
 
 const ADMIN_PASSWORD = "VH@Admin2026";
-const SESSION_KEY = "vh_admin_auth";
+const SESSION_KEY = "kw_admin_auth";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 30_000 } },
@@ -47,13 +47,13 @@ function LoginPage({ onLogin }: { onLogin: () => void }) {
             <Shield className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <div className="font-bold text-lg text-foreground">VeriHire Admin</div>
+            <div className="font-bold text-lg text-foreground">KaamWali Admin</div>
             <div className="text-xs text-muted-foreground">Restricted access</div>
           </div>
         </div>
         <div className="bg-card border border-border rounded-xl p-6">
           <h1 className="text-base font-semibold text-foreground mb-1">Sign in</h1>
-          <p className="text-xs text-muted-foreground mb-5">Enter your admin password to continue.</p>
+          <p className="text-xs text-muted-foreground mb-5">Enter the admin password to access the control panel.</p>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-muted-foreground mb-1.5">Password</label>
@@ -107,7 +107,7 @@ function Sidebar({ onLogout, mobile, onClose }: { onLogout: () => void; mobile?:
             <Shield className="w-4 h-4 text-primary-foreground" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="font-bold text-sm text-sidebar-foreground">VeriHire Admin</div>
+            <div className="font-bold text-sm text-sidebar-foreground">KaamWali Admin</div>
             <div className="text-xs text-muted-foreground">Control Panel</div>
           </div>
           {mobile && (
@@ -173,7 +173,7 @@ function AdminLayout({ onLogout, children }: { onLogout: () => void; children: R
           </button>
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4 text-primary" />
-            <span className="font-semibold text-sm text-foreground">VeriHire Admin</span>
+            <span className="font-semibold text-sm text-foreground">KaamWali Admin</span>
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6">

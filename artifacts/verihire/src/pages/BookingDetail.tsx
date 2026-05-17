@@ -395,7 +395,7 @@ export default function BookingDetail() {
               <h3 className="text-xl font-bold text-foreground mb-2 flex items-center gap-2">
                 <Star className="w-6 h-6 text-warning fill-warning" /> Rate your experience
               </h3>
-              <p className="text-muted-foreground max-w-md">Your feedback helps maintain trust in the VeriHire community and rewards good workers.</p>
+              <p className="text-muted-foreground max-w-md">Your feedback helps maintain trust in the KaamWali.com community and rewards good workers.</p>
             </div>
             <Dialog open={reviewOpen} onOpenChange={setReviewOpen}>
               <DialogTrigger asChild>

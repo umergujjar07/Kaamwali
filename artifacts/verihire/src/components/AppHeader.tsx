@@ -81,14 +81,14 @@ export function AppHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-white/30 bg-white/60 backdrop-blur-xl shadow-sm">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl shadow-sm">
-              V
+              K
             </div>
-            <span className="font-bold text-xl tracking-tight text-foreground">VeriHire</span>
+            <span className="font-bold text-xl tracking-tight text-foreground">KaamWali<span className="text-primary">.com</span></span>
           </Link>
           
           <nav className="hidden md:flex items-center gap-6">

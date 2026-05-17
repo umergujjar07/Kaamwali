@@ -109,7 +109,7 @@ export default function WorkerDetail() {
                 <h1 className="text-3xl font-bold text-foreground">{worker.fullName}</h1>
                 {worker.verificationStatus === "approved" ? (
                   <Badge className="bg-success text-success-foreground px-3 py-1 text-sm gap-1 w-fit">
-                    <ShieldCheck className="w-4 h-4" /> Verified by VeriHire
+                    <ShieldCheck className="w-4 h-4" /> Verified by KaamWali.com
                   </Badge>
                 ) : worker.verificationStatus === "pending" ? (
                   <Badge variant="outline" className="text-warning border-warning/50 bg-warning/10 px-3 py-1 text-sm gap-1 w-fit">
