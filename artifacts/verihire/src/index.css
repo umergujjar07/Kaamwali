@@ -306,6 +306,55 @@
     animation: page-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
+  /* ── Floating hero character animations ── */
+  @keyframes kw-float {
+    0%   { transform: translateY(0px) rotate(0deg); }
+    50%  { transform: translateY(-12px) rotate(0.5deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+  }
+
+  @keyframes kw-float-alt {
+    0%   { transform: translateY(0px) rotate(-0.5deg); }
+    50%  { transform: translateY(-9px) rotate(0.5deg); }
+    100% { transform: translateY(0px) rotate(-0.5deg); }
+  }
+
+  @keyframes kw-pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(74,222,128,0.6); }
+    50%       { opacity: 0.85; transform: scale(1.1); box-shadow: 0 0 0 5px rgba(74,222,128,0); }
+  }
+
+  .kw-float-1 { animation: kw-float      6.5s ease-in-out infinite; }
+  .kw-float-2 { animation: kw-float-alt  8.2s ease-in-out infinite 0.8s; }
+  .kw-float-3 { animation: kw-float      7.0s ease-in-out infinite 1.5s; }
+  .kw-float-4 { animation: kw-float-alt  9.0s ease-in-out infinite 0.3s; }
+
+  .kw-pulse-dot {
+    animation: kw-pulse-dot 2.4s ease-in-out infinite;
+  }
+
+  /* ── Scroll reveal ── */
+  .sr {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--sr-delay, 0ms);
+  }
+
+  .sr.sr-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Named delay classes (when --sr-delay var not used) */
+  .sr-delay-0 { --sr-delay: 0ms; }
+  .sr-delay-1 { --sr-delay: 80ms; }
+  .sr-delay-2 { --sr-delay: 160ms; }
+  .sr-delay-3 { --sr-delay: 240ms; }
+  .sr-delay-4 { --sr-delay: 320ms; }
+
   /* ── Page content wrapper — subtle bordered panel ── */
   .page-panel {
     background: rgba(255, 255, 255, 0.55);
