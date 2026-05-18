@@ -59,6 +59,9 @@ export function AppHeader() {
         <Link href="/bookings" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
           My Hires
         </Link>
+        <Link href="/about" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+          About
+        </Link>
       </>
     );
   };

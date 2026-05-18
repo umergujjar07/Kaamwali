@@ -6,6 +6,7 @@ import { RoleProvider } from "@/components/RoleContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Landing from "@/pages/Landing";
+import About from "@/pages/About";
 import WorkerRegistration from "@/pages/WorkerRegistration";
 import WorkerDetail from "@/pages/WorkerDetail";
 import Tasks from "@/pages/Tasks";
@@ -27,6 +28,7 @@ function App() {
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
           <Switch>
             <Route path="/" component={Landing} />
+            <Route path="/about" component={About} />
             <Route path="/workers/new" component={WorkerRegistration} />
             <Route path="/workers/:id" component={WorkerDetail} />
             <Route path="/tasks" component={Tasks} />
