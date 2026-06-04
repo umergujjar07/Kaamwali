@@ -1,0 +1,20 @@
+{
+  "buildCommand": "pnpm run build",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "outputDirectory": "artifacts/verihire/dist",
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "api/index.mjs"
+    }
+  ],
+  "functions": {
+    "api/index.mjs": {
+      "memory": 3008,
+      "maxDuration": 60
+    }
+  }
+}
